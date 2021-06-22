@@ -1,16 +1,18 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const routes = require("./routes/routes");
+const MongoConnection = require("./config/mongodb");
 const app = express();
 
 //@@@@ Load env files
-dotenv.config({ path: "config/confnig.env" });
+dotenv.config({ path: "config/config.env" });
 
 //@@@@ Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 //@@@@ Database connection
+MongoConnection();
 
 //@@@@ Set view engine
 app.set("view engine", "ejs");
