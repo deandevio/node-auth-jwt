@@ -1,6 +1,27 @@
+const User = require("../models/User");
+const { errorHandle } = require("../middleware/errorHandle");
+
 exports.getHome = (req, res) => res.render("home");
 exports.getSmoothies = (req, res) => res.render("smoothies");
 exports.getSignup = (req, res) => res.render("signup");
 exports.getLogin = (req, res) => res.render("login");
-exports.postSignup = (req, res) => res.send("new signup");
-exports.postLogin = (req, res) => res.send("new login");
+exports.postLogin = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    user.password === password ? res.status(200).json({ success: true, user }) : res.status(400).json({ success: false });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.postSignup = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.create({ email, password });
+    res.status(201).json({ sucess: true, user });
+  } catch (error) {
+    const errors = errorHandle(error);
+    res.status(400).json({ errors });
+  }
+};
