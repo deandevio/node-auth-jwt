@@ -8,6 +8,7 @@ const app = express();
 dotenv.config({ path: "config/config.env" });
 
 //@@@@ Middleware
+app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
