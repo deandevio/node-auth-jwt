@@ -8,8 +8,7 @@ exports.getLogin = (req, res) => res.render("login");
 exports.postLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
-    user.password === password ? res.status(200).json({ success: true, user }) : res.status(400).json({ success: false });
+    User.login(email, password);
   } catch (error) {
     console.log(error);
   }
@@ -25,3 +24,5 @@ exports.postSignup = async (req, res) => {
     res.status(400).json({ errors });
   }
 };
+
+exports.deleteUsers = async (req, res) => await User.deleteMany();
