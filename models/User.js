@@ -23,12 +23,15 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.statics.login = async function (email, password, next) {
+userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
+  console.log(user);
   if (user) {
-    bcrypt.compare(password, user.password, function (err, res) {
-      // res === true
-    });
+    const auth = await bcrypt.compare(password, user.password);
+    if (auth) {
+      return user;
+    }
+    throw Error("Incorrent password");
   }
   throw Error("Incorrect email");
 };
