@@ -8,9 +8,10 @@ exports.getLogin = (req, res) => res.render("login");
 exports.postLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
-    user.password === password ? res.status(200).json({ success: true, user }) : res.status(400).json({ success: false });
+    const user = await User.login(email, password);
+    res.status(200).json({ success: true, user });
   } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
     console.log(error);
   }
 };
@@ -25,3 +26,5 @@ exports.postSignup = async (req, res) => {
     res.status(400).json({ errors });
   }
 };
+
+exports.deleteUsers = async (req, res) => await User.deleteMany();

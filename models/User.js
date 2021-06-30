@@ -17,6 +17,25 @@ const userSchema = new Schema({
   },
 });
 
+userSchema.pre("save", async function (next) {
+  const salt = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+userSchema.statics.login = async function (email, password) {
+  const user = await this.findOne({ email });
+  console.log(user);
+  if (user) {
+    const auth = await bcrypt.compare(password, user.password);
+    if (auth) {
+      return user;
+    }
+    throw Error("Incorrent password");
+  }
+  throw Error("Incorrect email");
+};
+
 const User = model("user", userSchema);
 
 module.exports = User;
