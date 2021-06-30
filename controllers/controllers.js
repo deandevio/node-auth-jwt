@@ -8,10 +8,9 @@ exports.getLogin = (req, res) => res.render("login");
 exports.postLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.login(email, password);
-    res.status(200).json({ success: true, user });
+    const user = await User.findOne({ email });
+    user.password === password ? res.status(200).json({ success: true, user }) : res.status(400).json({ success: false });
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message });
     console.log(error);
   }
 };
@@ -27,4 +26,7 @@ exports.postSignup = async (req, res) => {
   }
 };
 
-exports.deleteUsers = async (req, res) => await User.deleteMany();
+exports.deleteUsers = async (req, res) => {
+  const users = await User.deleteMany({});
+  res.status(200).json({ success: true, users });
+};
